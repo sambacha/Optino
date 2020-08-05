@@ -1,6 +1,5 @@
 # BokkyPooBah's Vanilla And Bounded Optino(tm) Crypto Options
 
-
 Status: Work in progress
 
 See the the smart contracts in [contracts/OptinoFactory.sol](contracts/OptinoFactory.sol).
@@ -17,13 +16,12 @@ You can test out a version of the smart contracts using MetaMask connected to th
 
 # Risks
 
-* Bugs
-  * Smart contracts
-  * UI
-* Manipulation of the price oracles
-* Flash loans
-* Chain splits
-
+- Bugs
+  - Smart contracts
+  - UI
+- Manipulation of the price oracles
+- Flash loans
+- Chain splits
 
 ## MakerDAO Price Feed
 
@@ -46,17 +44,17 @@ e.g. ETH/DAI
 
 Example: ETH/DAI Optinos
 
-* `callPut` - `0` for call, `1` for put
-* `strike`
-* `spot`
-* `rateDecimals` - `strike` and `spot` decimal places
-*
+- `callPut` - `0` for call, `1` for put
+- `strike`
+- `spot`
+- `rateDecimals` - `strike` and `spot` decimal places
+-
 
 ### Vanilla Call Optino Payoff Formula
 
 ```javascript
-payoffInQuoteToken = max(0, spot - strike)
-payoffInBaseToken = payoffInQuoteToken / (spot / 10^rateDecimals)
+payoffInQuoteToken = max(0, spot - strike);
+payoffInBaseToken = payoffInQuoteToken / ((spot / 10) ^ rateDecimals);
 ```
 
 <br />
@@ -64,8 +62,8 @@ payoffInBaseToken = payoffInQuoteToken / (spot / 10^rateDecimals)
 ### Vanilla Call Optino Collateral Payoff Formula
 
 ```javascript
-payoffInQuoteToken = spot - max(0, spot - strike)
-payoffInBaseToken = payoffInQuoteToken / (spot / 10^rateDecimals)
+payoffInQuoteToken = spot - max(0, spot - strike);
+payoffInBaseToken = payoffInQuoteToken / ((spot / 10) ^ rateDecimals);
 ```
 
 <br />
@@ -73,8 +71,8 @@ payoffInBaseToken = payoffInQuoteToken / (spot / 10^rateDecimals)
 ### Vanilla Put Optino Payoff Formula
 
 ```javascript
-payoffInQuoteToken = max(0, strike - spot)
-payoffInBaseToken = payoffInQuoteToken / (spot / 10^rateDecimals)
+payoffInQuoteToken = max(0, strike - spot);
+payoffInBaseToken = payoffInQuoteToken / ((spot / 10) ^ rateDecimals);
 ```
 
 <br />
@@ -82,46 +80,44 @@ payoffInBaseToken = payoffInQuoteToken / (spot / 10^rateDecimals)
 ### Vanilla Put Optino Collateral Payoff Formula
 
 ```javascript
-payoffInQuoteToken = strike - max(0, strike - spot)
-payoffInBaseToken = payoffInQuoteToken / (spot / 10^rateDecimals)
+payoffInQuoteToken = strike - max(0, strike - spot);
+payoffInBaseToken = payoffInQuoteToken / ((spot / 10) ^ rateDecimals);
 ```
 
 <br />
-
-
 
 // ----------------------------------------------------------------------------
 // Vanilla Optino Formula
 //
 // Call optino - 10 units with strike 200, using spot of [150, 200, 250], collateral of 10 ETH
 // - 10 OptinoToken created
-//   - payoffInQuoteTokenPerUnitBaseToken = max(0, spot-strike) = [0, 0, 50] DAI
-//   - payoffInQuoteToken = 10 * [0, 0, 500] DAI
-//   * payoffInBaseTokenPerUnitBaseToken = payoffInQuoteTokenPerUnitBaseToken / [150, 200, 250] = [0, 0, 50/250] = [0, 0, 0.2] ETH
-//   * payoffInBaseToken = payoffInBaseTokenPerUnitBaseToken * 10 = [0 * 10, 0 * 10, 0.2 * 10] = [0, 0, 2] ETH
+// - payoffInQuoteTokenPerUnitBaseToken = max(0, spot-strike) = [0, 0, 50] DAI
+// - payoffInQuoteToken = 10 _ [0, 0, 500] DAI
+// _ payoffInBaseTokenPerUnitBaseToken = payoffInQuoteTokenPerUnitBaseToken / [150, 200, 250] = [0, 0, 50/250] = [0, 0, 0.2] ETH
+// _ payoffInBaseToken = payoffInBaseTokenPerUnitBaseToken _ 10 = [0 * 10, 0 * 10, 0.2 * 10] = [0, 0, 2] ETH
 // - 10 OptinoCollateralToken created
-//   - payoffInQuoteTokenPerUnitBaseToken = spot - max(0, spot-strike) = [150, 200, 200] DAI
-//   - payoffInQuoteToken = 10 * [1500, 2000, 2000] DAI
-//   * payoffInBaseTokenPerUnitBaseToken = payoffInQuoteTokenPerUnitBaseToken / [150, 200, 250] = [1, 1, 200/250] = [1, 1, 0.8] ETH
-//   * payoffInBaseToken = payoffInBaseTokenPerUnitBaseToken * 10 = [1 * 10, 1 * 10, 0.8 * 10] = [10, 10, 8] ETH
+// - payoffInQuoteTokenPerUnitBaseToken = spot - max(0, spot-strike) = [150, 200, 200] DAI
+// - payoffInQuoteToken = 10 _ [1500, 2000, 2000] DAI
+// _ payoffInBaseTokenPerUnitBaseToken = payoffInQuoteTokenPerUnitBaseToken / [150, 200, 250] = [1, 1, 200/250] = [1, 1, 0.8] ETH
+// _ payoffInBaseToken = payoffInBaseTokenPerUnitBaseToken _ 10 = [1 * 10, 1 * 10, 0.8 * 10] = [10, 10, 8] ETH
 //
 // Put optino - 10 units with strike 200, using spot of [150, 200, 250], collateral of 2000 DAI
 // - 10 OptinoToken created
-//   * payoffInQuoteTokenPerUnitBaseToken = max(0, strike-spot) = [50, 0, 0] DAI
-//   * payoffInQuoteToken = 10 * [500, 0, 0] DAI
-//   - payoffInBaseTokenPerUnitBaseToken = payoffInQuoteTokenPerUnitBaseToken / [150, 200, 250] = [50/150, 0/200, 0/250] = [0.333333333, 0, 0] ETH
-//   - payoffInBaseToken = payoffInBaseTokenPerUnitBaseToken * 10 = [0.333333333 * 10, 0 * 10, 0 * 10] = [3.333333333, 0, 0] ETH
+// _ payoffInQuoteTokenPerUnitBaseToken = max(0, strike-spot) = [50, 0, 0] DAI
+// _ payoffInQuoteToken = 10 _ [500, 0, 0] DAI
+// - payoffInBaseTokenPerUnitBaseToken = payoffInQuoteTokenPerUnitBaseToken / [150, 200, 250] = [50/150, 0/200, 0/250] = [0.333333333, 0, 0] ETH
+// - payoffInBaseToken = payoffInBaseTokenPerUnitBaseToken _ 10 = [0.333333333 * 10, 0 * 10, 0 * 10] = [3.333333333, 0, 0] ETH
 // - 10 OptinoCollateralToken created
-//   * payoffInQuoteTokenPerUnitBaseToken = strike - max(0, strike-spot) = [150, 200, 200] DAI
-//   * payoffInQuoteToken = 10 * [1500, 2000, 2000] DAI
-//   - payoffInBaseTokenPerUnitBaseToken = payoffInQuoteTokenPerUnitBaseToken / spot
-//   - payoffInBaseTokenPerUnitBaseToken = [150, 200, 200] / [150, 200, 250] = [1, 1, 200/250] = [1, 1, 0.8] ETH
-//   - payoffInBaseToken = payoffInBaseTokenPerUnitBaseToken * 10 = [1 * 10, 1 * 10, 0.8 * 10] = [10, 10, 8] ETH
+// _ payoffInQuoteTokenPerUnitBaseToken = strike - max(0, strike-spot) = [150, 200, 200] DAI
+// _ payoffInQuoteToken = 10 _ [1500, 2000, 2000] DAI
+// - payoffInBaseTokenPerUnitBaseToken = payoffInQuoteTokenPerUnitBaseToken / spot
+// - payoffInBaseTokenPerUnitBaseToken = [150, 200, 200] / [150, 200, 250] = [1, 1, 200/250] = [1, 1, 0.8] ETH
+// - payoffInBaseToken = payoffInBaseTokenPerUnitBaseToken _ 10 = [1 * 10, 1 * 10, 0.8 * 10] = [10, 10, 8] ETH
 //
 //
 // ----------------------------------------------------------------------------
 library VanillaOptinoFormulae {
-    using SafeMath for uint;
+using SafeMath for uint;
 
     // ------------------------------------------------------------------------
     // Payoff for baseToken/quoteToken, e.g. ETH/DAI
@@ -168,6 +164,7 @@ library VanillaOptinoFormulae {
             _collateral = _collateralPayoffInQuoteToken;
         }
     }
+
 }
 
 <br />
@@ -193,7 +190,6 @@ putPayoff = max(strike - spot, 0)
 flooredPutPayoff = max(strike - max(spot, floor), 0)
 flooredPutPayoff = max(strike - spot, 0) - max(floor - spot, 0)
 ```
-
 
 <br />
 

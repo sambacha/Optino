@@ -9,7 +9,6 @@ function addSig(sig) {
 addSig("setOwner(address)");
 addSig("setAuthority(address)");
 
-
 var addressNames = {};
 var nameAddresses = {};
 
@@ -59,7 +58,6 @@ function getAddressFromName(name) {
     return "";
   }
 }
-
 
 var addressSymbol = {};
 var symbolAddresses = {};
