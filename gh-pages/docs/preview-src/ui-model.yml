@@ -1,0 +1,36 @@
+antoraVersion: '1.0.0'
+site:
+  url: "#"
+  title: Optino
+  homeUrl: &home_url
+  components:
+  - name: ropsten
+    title: Optino
+    url: '#'
+    versions:
+    - &latest_version_ropsten
+      url: '#' 
+      version: '1.1'
+      displayVersion: '1.1'
+    - url: '#' 
+      version: '0.9.9'
+      displayVersion: '0.9.9'
+    latestVersion: *latest_version_ropsten
+
+page:
+  url: *home_url
+  home: true
+  title: Brand&#8217;s Hardware &amp; Software Requirements
+  navigation:
+  - root: true
+    content: Optino Overview
+    url: '#'
+    urlType: README.adoc
+    items:
+    - content: Quickstart
+      url: '#'
+      urlType: fragment
+      items:
+      - content: Deployment
+        url: DEPLOY.adoc
+        urlType: internal
