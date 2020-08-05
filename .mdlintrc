@@ -1,0 +1,5 @@
+{
+  "default": true,
+  "ul-style": { "style": "sublist" },
+  "no-duplicate-header": false
+}
